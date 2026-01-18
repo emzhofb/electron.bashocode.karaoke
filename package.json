@@ -1,0 +1,33 @@
+{
+  "name": "karaoke-fx",
+  "version": "0.1.0",
+  "description": "Simple Windows desktop app for live microphone effects (echo, reverb, autotune-lite)",
+  "main": "main.js",
+  "author": "",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder --win"
+  },
+  "devDependencies": {
+    "electron": "^29.3.1",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.karaoke.fx",
+    "productName": "KaraokeFX",
+    "files": [
+      "**/*"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    },
+    "win": {
+      "target": [
+        "portable",
+        "nsis"
+      ]
+    }
+  }
+}

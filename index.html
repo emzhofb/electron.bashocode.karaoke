@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>KaraokeFX</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">Live Voice Effects</p>
+          <h1>KaraokeFX Studio</h1>
+          <p class="subhead">
+            Sing with instant echo, lush reverb, modulation, dynamics control, and experimental auto-tune.
+            Use headphones to avoid feedback.
+          </p>
+        </div>
+        <div class="status">
+          <div class="indicator" id="statusLight"></div>
+          <div>
+            <div class="status-label" id="statusLabel">Ready</div>
+            <div class="status-meta" id="statusMeta">No microphone connected</div>
+          </div>
+        </div>
+      </header>
+
+      <section class="controls">
+        <div class="panel">
+          <h2>Session</h2>
+          <button class="primary" id="toggleSession">Start Live Session</button>
+          <div class="slider">
+            <label for="masterGain">Output Level</label>
+            <input type="range" id="masterGain" min="0" max="1" value="0.8" step="0.01" />
+          </div>
+          <div class="slider">
+            <label for="balance">Balance</label>
+            <input type="range" id="balance" min="-1" max="1" value="0" step="0.01" />
+          </div>
+          <div class="note">Tip: Lower output if you hear feedback or clipping.</div>
+        </div>
+
+        <div class="panel">
+          <h2>Echo</h2>
+          <label class="switch">
+            <input type="checkbox" id="echoEnabled" checked />
+            <span>Enable Echo</span>
+          </label>
+          <label class="switch">
+            <input type="checkbox" id="echoSync" />
+            <span>Sync to Tempo</span>
+          </label>
+          <div class="slider">
+            <label for="echoTempo">Tempo (BPM)</label>
+            <input type="range" id="echoTempo" min="60" max="180" value="110" step="1" />
+          </div>
+          <div class="field">
+            <label for="echoDivision">Echo Division</label>
+            <select id="echoDivision">
+              <option value="1">1/4</option>
+              <option value="0.5">1/8</option>
+              <option value="0.333">1/8T</option>
+              <option value="0.25">1/16</option>
+            </select>
+          </div>
+          <div class="slider">
+            <label for="echoTime">Delay Time</label>
+            <input type="range" id="echoTime" min="0.08" max="0.9" value="0.32" step="0.01" />
+          </div>
+          <div class="slider">
+            <label for="echoFeedback">Feedback</label>
+            <input type="range" id="echoFeedback" min="0" max="0.85" value="0.35" step="0.01" />
+          </div>
+          <div class="slider">
+            <label for="echoMix">Echo Mix</label>
+            <input type="range" id="echoMix" min="0" max="1" value="0.4" step="0.01" />
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>Reverb</h2>
+          <label class="switch">
+            <input type="checkbox" id="reverbEnabled" checked />
+            <span>Enable Reverb</span>
+          </label>
+          <div class="slider">
+            <label for="reverbRoom">Room Size</label>
+            <input type="range" id="reverbRoom" min="0.4" max="2.5" value="1.2" step="0.1" />
+          </div>
+          <div class="slider">
+            <label for="reverbDamp">Damping</label>
+            <input type="range" id="reverbDamp" min="0.4" max="5" value="2.2" step="0.1" />
+          </div>
+          <div class="slider">
+            <label for="reverbMix">Reverb Mix</label>
+            <input type="range" id="reverbMix" min="0" max="1" value="0.5" step="0.01" />
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>Modulation</h2>
+          <label class="switch">
+            <input type="checkbox" id="chorusEnabled" checked />
+            <span>Chorus</span>
+          </label>
+          <div class="slider">
+            <label for="chorusRate">Rate</label>
+            <input type="range" id="chorusRate" min="0.1" max="3" value="1.1" step="0.05" />
+          </div>
+          <div class="slider">
+            <label for="chorusDepth">Depth</label>
+            <input type="range" id="chorusDepth" min="0" max="0.02" value="0.008" step="0.001" />
+          </div>
+          <div class="slider">
+            <label for="chorusMix">Mix</label>
+            <input type="range" id="chorusMix" min="0" max="1" value="0.35" step="0.01" />
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="flangerEnabled" />
+            <span>Flanger</span>
+          </label>
+          <div class="slider">
+            <label for="flangerRate">Rate</label>
+            <input type="range" id="flangerRate" min="0.05" max="1.5" value="0.35" step="0.01" />
+          </div>
+          <div class="slider">
+            <label for="flangerDepth">Depth</label>
+            <input type="range" id="flangerDepth" min="0" max="0.004" value="0.0016" step="0.0001" />
+          </div>
+          <div class="slider">
+            <label for="flangerFeedback">Feedback</label>
+            <input type="range" id="flangerFeedback" min="0" max="0.85" value="0.35" step="0.01" />
+          </div>
+          <div class="slider">
+            <label for="flangerMix">Mix</label>
+            <input type="range" id="flangerMix" min="0" max="1" value="0.25" step="0.01" />
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="phaserEnabled" />
+            <span>Phaser</span>
+          </label>
+          <div class="slider">
+            <label for="phaserRate">Rate</label>
+            <input type="range" id="phaserRate" min="0.05" max="2" value="0.5" step="0.01" />
+          </div>
+          <div class="slider">
+            <label for="phaserDepth">Depth</label>
+            <input type="range" id="phaserDepth" min="0" max="1200" value="450" step="10" />
+          </div>
+          <div class="slider">
+            <label for="phaserMix">Mix</label>
+            <input type="range" id="phaserMix" min="0" max="1" value="0.25" step="0.01" />
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>Pitch & Harmony</h2>
+          <div class="slider">
+            <label for="pitchShift">Pitch Shift (semitones)</label>
+            <input type="range" id="pitchShift" min="-12" max="12" value="0" step="1" />
+          </div>
+          <div class="slider">
+            <label for="pitchMix">Pitch Mix</label>
+            <input type="range" id="pitchMix" min="0" max="1" value="0.4" step="0.01" />
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="harmonyEnabled" />
+            <span>Harmony Voice</span>
+          </label>
+          <div class="slider">
+            <label for="harmonyShift">Harmony Interval (semitones)</label>
+            <input type="range" id="harmonyShift" min="-12" max="12" value="7" step="1" />
+          </div>
+          <div class="slider">
+            <label for="harmonyMix">Harmony Mix</label>
+            <input type="range" id="harmonyMix" min="0" max="1" value="0.35" step="0.01" />
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="tuneEnabled" />
+            <span>Auto-Tune Snap</span>
+          </label>
+          <div class="slider">
+            <label for="tuneStrength">Snap Strength</label>
+            <input type="range" id="tuneStrength" min="0" max="1" value="0.55" step="0.01" />
+          </div>
+          <div class="slider">
+            <label for="tuneMix">Tune Mix</label>
+            <input type="range" id="tuneMix" min="0" max="1" value="0.5" step="0.01" />
+          </div>
+          <div class="note" id="tuneStatus">Auto-tune is off.</div>
+          <div class="pitch-readout">
+            <span>Detected</span>
+            <strong id="pitchDetected">--</strong>
+            <span>Target</span>
+            <strong id="pitchTarget">--</strong>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>Equalizer</h2>
+          <div class="slider">
+            <label for="eqLow">Low</label>
+            <input type="range" id="eqLow" min="-12" max="12" value="0" step="0.5" />
+          </div>
+          <div class="slider">
+            <label for="eqMid">Mid</label>
+            <input type="range" id="eqMid" min="-12" max="12" value="1" step="0.5" />
+          </div>
+          <div class="slider">
+            <label for="eqHigh">High</label>
+            <input type="range" id="eqHigh" min="-12" max="12" value="2" step="0.5" />
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>Dynamics</h2>
+          <label class="switch">
+            <input type="checkbox" id="gateEnabled" checked />
+            <span>Noise Gate</span>
+          </label>
+          <div class="slider">
+            <label for="gateThreshold">Gate Threshold</label>
+            <input type="range" id="gateThreshold" min="0.005" max="0.15" value="0.025" step="0.001" />
+          </div>
+          <div class="slider">
+            <label for="gateReduction">Gate Reduction (dB)</label>
+            <input type="range" id="gateReduction" min="-60" max="0" value="-32" step="1" />
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="compressorEnabled" checked />
+            <span>Compressor</span>
+          </label>
+          <div class="slider">
+            <label for="compressorThreshold">Threshold (dB)</label>
+            <input type="range" id="compressorThreshold" min="-60" max="0" value="-18" step="1" />
+          </div>
+          <div class="slider">
+            <label for="compressorRatio">Ratio</label>
+            <input type="range" id="compressorRatio" min="1" max="20" value="4" step="0.5" />
+          </div>
+          <div class="slider">
+            <label for="compressorAttack">Attack (s)</label>
+            <input type="range" id="compressorAttack" min="0.001" max="0.2" value="0.01" step="0.001" />
+          </div>
+          <div class="slider">
+            <label for="compressorRelease">Release (s)</label>
+            <input type="range" id="compressorRelease" min="0.05" max="0.6" value="0.2" step="0.01" />
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="limiterEnabled" checked />
+            <span>Limiter</span>
+          </label>
+          <div class="slider">
+            <label for="limiterThreshold">Limiter Threshold (dB)</label>
+            <input type="range" id="limiterThreshold" min="-12" max="0" value="-3" step="1" />
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>Presets & FX</h2>
+          <div class="field">
+            <label for="micPreset">Mic Preset</label>
+            <select id="micPreset">
+              <option value="">Select preset</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="child">Child</option>
+              <option value="studio">Studio</option>
+              <option value="live">Live</option>
+              <option value="hall">Hall</option>
+              <option value="dangdut">Dangdut</option>
+              <option value="pop">Pop</option>
+              <option value="rock">Rock</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="specialFx">Special FX</label>
+            <select id="specialFx">
+              <option value="">Select effect</option>
+              <option value="robot">Robot</option>
+              <option value="monster">Monster</option>
+              <option value="chipmunk">Child Voice</option>
+              <option value="telephone">Telephone</option>
+              <option value="radio">Radio</option>
+            </select>
+          </div>
+          <div class="note">Presets adjust multiple controls at once. You can tweak after applying.</div>
+        </div>
+      </section>
+    </div>
+
+    <script src="renderer.js"></script>
+  </body>
+</html>
