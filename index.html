@@ -30,6 +30,14 @@
         <div class="panel">
           <h2>Session</h2>
           <button class="primary" id="toggleSession">Start Live Session</button>
+          <div class="field">
+            <label for="inputDevice">Mic Input</label>
+            <select id="inputDevice"></select>
+          </div>
+          <div class="field">
+            <label for="outputDevice">Speaker Output</label>
+            <select id="outputDevice"></select>
+          </div>
           <div class="slider">
             <label for="masterGain">Output Level</label>
             <input type="range" id="masterGain" min="0" max="1" value="0.8" step="0.01" />

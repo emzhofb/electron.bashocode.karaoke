@@ -3,6 +3,8 @@ const ui = {
   statusLight: document.getElementById('statusLight'),
   statusLabel: document.getElementById('statusLabel'),
   statusMeta: document.getElementById('statusMeta'),
+  inputDevice: document.getElementById('inputDevice'),
+  outputDevice: document.getElementById('outputDevice'),
   masterGain: document.getElementById('masterGain'),
   balance: document.getElementById('balance'),
   echoEnabled: document.getElementById('echoEnabled'),
@@ -66,7 +68,8 @@ const state = {
   gateAnalyser: null,
   pitchInterval: null,
   gateInterval: null,
-  smoothedRatio: 1
+  smoothedRatio: 1,
+  outputReady: false
 };
 
 const setStatus = (label, meta, live = false) => {
@@ -427,6 +430,70 @@ const applyMaster = () => {
   state.nodes.master.gain.value = Number(ui.masterGain.value);
 };
 
+const applyOutputDevice = async () => {
+  if (!state.audioContext) {
+    return;
+  }
+  const outputId = ui.outputDevice.value;
+  if (!outputId) {
+    return;
+  }
+  if (typeof state.audioContext.setSinkId === 'function') {
+    try {
+      await state.audioContext.setSinkId(outputId);
+      state.outputReady = true;
+    } catch (err) {
+      setStatus('Warning', 'Output device could not be selected');
+    }
+  } else if (!state.outputReady) {
+    setStatus('Warning', 'Output selection not supported on this system');
+    state.outputReady = true;
+  }
+};
+
+const refreshDeviceList = async () => {
+  const devices = await navigator.mediaDevices.enumerateDevices();
+  const inputs = devices.filter((device) => device.kind === 'audioinput');
+  const outputs = devices.filter((device) => device.kind === 'audiooutput');
+
+  const currentInput = ui.inputDevice.value;
+  const currentOutput = ui.outputDevice.value;
+
+  ui.inputDevice.innerHTML = '';
+  ui.outputDevice.innerHTML = '';
+
+  const inputPlaceholder = document.createElement('option');
+  inputPlaceholder.value = '';
+  inputPlaceholder.textContent = inputs.length ? 'Default microphone' : 'No microphone found';
+  ui.inputDevice.appendChild(inputPlaceholder);
+
+  inputs.forEach((device, index) => {
+    const option = document.createElement('option');
+    option.value = device.deviceId;
+    option.textContent = device.label || `Microphone ${index + 1}`;
+    ui.inputDevice.appendChild(option);
+  });
+
+  const outputPlaceholder = document.createElement('option');
+  outputPlaceholder.value = '';
+  outputPlaceholder.textContent = outputs.length ? 'Default output' : 'No output found';
+  ui.outputDevice.appendChild(outputPlaceholder);
+
+  outputs.forEach((device, index) => {
+    const option = document.createElement('option');
+    option.value = device.deviceId;
+    option.textContent = device.label || `Output ${index + 1}`;
+    ui.outputDevice.appendChild(option);
+  });
+
+  ui.inputDevice.value = inputs.some((device) => device.deviceId === currentInput)
+    ? currentInput
+    : '';
+  ui.outputDevice.value = outputs.some((device) => device.deviceId === currentOutput)
+    ? currentOutput
+    : '';
+};
+
 const setControlValue = (control, value) => {
   control.value = value;
 };
@@ -603,12 +670,31 @@ const startSession = async () => {
   setStatus('Starting...', 'Requesting microphone access...');
 
   try {
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    const hasMic = devices.some((device) => device.kind === 'audioinput');
+    if (!hasMic) {
+      throw new Error('No microphone device found. Plug it in and try again.');
+    }
+
+    const selectedInput = ui.inputDevice.value;
+    const audioConstraints = {
+      echoCancellation: false,
+      noiseSuppression: false,
+      autoGainControl: false
+    };
+    if (selectedInput) {
+      audioConstraints.deviceId = { exact: selectedInput };
+    }
     const stream = await navigator.mediaDevices.getUserMedia({
-      audio: {
-        echoCancellation: false,
-        noiseSuppression: false,
-        autoGainControl: false
-      }
+      audio: audioConstraints
+    });
+    stream.getTracks().forEach((track) => {
+      track.addEventListener('ended', () => {
+        if (state.live) {
+          setStatus('Disconnected', 'Microphone was unplugged');
+          stopSession();
+        }
+      });
     });
 
     const audioContext = new AudioContext({ latencyHint: 'interactive' });
@@ -778,6 +864,7 @@ const startSession = async () => {
     applyCompressor();
     applyLimiter();
     applyGateSettings();
+    await applyOutputDevice();
     startPitchLoop();
     startGateLoop();
 
@@ -884,3 +971,27 @@ ui.specialFx.addEventListener('change', (event) => {
 });
 
 setStatus('Ready', 'No microphone connected');
+
+navigator.mediaDevices.addEventListener('devicechange', async () => {
+  await refreshDeviceList();
+  if (!state.live) {
+    return;
+  }
+  const devices = await navigator.mediaDevices.enumerateDevices();
+  const hasMic = devices.some((device) => device.kind === 'audioinput');
+  if (!hasMic) {
+    setStatus('Disconnected', 'Microphone not found');
+    stopSession();
+  }
+});
+
+ui.inputDevice.addEventListener('change', async () => {
+  if (state.live) {
+    await stopSession();
+    startSession();
+  }
+});
+
+ui.outputDevice.addEventListener('change', applyOutputDevice);
+
+refreshDeviceList();
