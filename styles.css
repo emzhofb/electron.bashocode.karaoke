@@ -201,6 +201,31 @@ body {
   font-weight: 600;
 }
 
+footer {
+  margin-top: 8px;
+  padding: 18px 22px;
+  border-radius: var(--radius);
+  background: rgba(10, 14, 28, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--muted);
+  font-size: 0.85rem;
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+
+footer a {
+  color: var(--accent-2);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+footer a:hover,
+footer a:focus-visible {
+  color: #ffffff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 @media (max-width: 820px) {
   .hero {
     flex-direction: column;

@@ -1,6 +1,6 @@
 {
-  "name": "karaoke-fx",
-  "version": "0.1.0",
+  "name": "karaoke-aja",
+  "version": "0.1.3",
   "description": "Simple Windows desktop app for live microphone effects (echo, reverb, autotune-lite)",
   "main": "main.js",
   "author": "",
@@ -15,8 +15,8 @@
     "electron-builder": "^24.13.3"
   },
   "build": {
-    "appId": "com.karaoke.fx",
-    "productName": "KaraokeFX",
+    "appId": "com.karaoke.aja",
+    "productName": "KaraokeAja",
     "files": [
       "**/*"
     ],

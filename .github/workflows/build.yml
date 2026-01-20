@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, macos-latest]
+        os: [windows-latest]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -35,6 +35,6 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: KaraokeFX-${{ matrix.os }}
+          name: KaraokeAja-${{ matrix.os }}
           path: dist/
           if-no-files-found: error
